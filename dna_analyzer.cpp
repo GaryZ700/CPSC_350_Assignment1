@@ -111,7 +111,7 @@ string DnaAnalyzer::GenerateDna(int numberOfDnaStrings){
 		C = sqrt( -2 * log(a)) * cos(2*M_PI*b);
 
 		//Round number to account for fact that the length of a DNA string can not be a decimal value	
-		length = round(lengthStdDev * C + lengthMean);
+		length = abs(round(lengthStdDev * C + lengthMean));
 
 		nucleotideNumber += length;
 

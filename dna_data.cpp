@@ -66,7 +66,7 @@ int DnaData::GetLengthSum(){ return lengthSum; }
   totalNucleotides: integer of the total nucleotides for all the random DNA strigns to be generated
 */
 string DnaData::GenerateDna(string dnaStringsFileName, int totalNucleotides){
-
+		
 	double lastBigramNumber=0;
 	double currentBigramNumber;
 	fstream dnaStringsFile;
@@ -92,6 +92,12 @@ string DnaData::GenerateDna(string dnaStringsFileName, int totalNucleotides){
 			if(*data > largestBigramAmount)
 				largestBigramAmount = *data;
 		}
+
+		//Perform the logic for sole nucleotides
+		string dna2;
+		dna2 = kNUCLEOTIDES.at(i);
+		double *data2 = GetData(dna2 + "Amount");
+		*data2 = DnaStatistic(dna2) * totalNucleotides;
 	}
 
 	//Begin Computation of the Random DNA Strings
@@ -101,7 +107,7 @@ string DnaData::GenerateDna(string dnaStringsFileName, int totalNucleotides){
 	while(getline(dnaStringsFile, line)){
 
 		int dnaLength = stoi(line);
-
+	
 		//check if the line is composed of an odd or even amount of nucleotides
 		//if even, then just addd in the correct amount of bigrams
 		//if odd, then add in the as many bigrams as possible, and then end with
@@ -110,8 +116,9 @@ string DnaData::GenerateDna(string dnaStringsFileName, int totalNucleotides){
 			dnaStrings += GenerateBigrams((dnaLength-1) / 2);
 			dnaStrings += GenerateNucleotide();
 		}
-		else
+		else{
 			dnaStrings += GenerateBigrams(dnaLength / 2);
+		}
 		
 		dnaStrings += "\n";
 	}
@@ -154,14 +161,13 @@ double DnaData::DnaStatistic(string dna){
 */
 string DnaData::GenerateBigrams(int bigramSize){
 
+
 	int oldBigramsStringSize = 0;
 	string bigrams = "";
-	
 	while(bigrams.size() / 2 < bigramSize){
-
+	
 		for(int i=0; i<4; ++i){
 			for(int j=0; j<4; ++j){
-				
 				string bigramName;
 				bigramName = kNUCLEOTIDES.at(i);
 				bigramName += kNUCLEOTIDES.at(j); 
@@ -177,11 +183,12 @@ string DnaData::GenerateBigrams(int bigramSize){
 			
 				//return the bigrams string when the 
 				//correct amount of bigrmas have been generated
-				if(bigrams.size() / 2 == bigramSize)
+				if(bigrams.size() / 2 == bigramSize){
 					return bigrams;
+				}
 			} 
 		}
-		
+			
 		//If there has been no update to the amount of 
 		//bigrams added to the DNA string, then
 		//decrease the min probability the bigram 
@@ -210,12 +217,20 @@ string DnaData::GenerateNucleotide(){
 		nucleotideName = kNUCLEOTIDES.at(i);
 		
 		nucleotide = GetData(nucleotideName + "Amount");
-			
+		
+	
 		if(*nucleotide > 0){	
 			--(*nucleotide);
 			return nucleotideName;
 		}
 	}
+
+	//In the case where a sole nucleotide plays no role in the final distribution of the DNA Strings, 
+	//this case occurs when the input dna is only composed of even number strands,
+	//but rounding from guassian curve produces an odd number string 
+	string dna; 
+	dna += kNUCLEOTIDES.at(rand() / RAND_MAX + 3);
+	return dna;
 }
 
 //----------------------------------------------------------------------------------
