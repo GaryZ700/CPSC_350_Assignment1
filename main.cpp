@@ -34,8 +34,12 @@ int main(int argc, char* argv[]){
 			 inputFile = input.GetFile(kNoCmdLineArg, kBadFileName, ios::in); 
 		else if(argc < 0)
 			inputFile = input.GetFile(kRerunFileAsk, kBadFileName, ios::in);
-		else
-			 inputFile.open(argv[1]);
+		else{
+			if(HelpfulMethods::FileExists(argv[1]))
+				inputFile.open(argv[1]);
+			else
+				inputFile = input.GetFile(kBadFileName, kBadFileName, ios::in);
+		}
 			 
 		//Compute the statistics from the DNA File
 		//and checks whether or not the dna data has been inputted correctly

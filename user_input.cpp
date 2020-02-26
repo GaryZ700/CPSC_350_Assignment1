@@ -115,7 +115,7 @@ fstream UserInput::GetFile(string msg, string error_msg, ios::openmode mode){
 	//check to ensure that the file is open
 	//if not, keep asking the user until a correct file name is provided
 	while(!file.is_open()){
-		cout << error_msg << endl;
+		cout << error_msg;
 		GetLine(fileName);
 		file.open(fileName);
 	}
